@@ -13,15 +13,26 @@ Portable: You can build locally, deploy to the cloud, and run anywhere.
 Scalable: You can increase and automatically distribute container replicas.
 Stackable: You can stack services vertically and on-the-fly.
 
+Docker server also called engine
+docker version -> verified cli can task to engine
+docker info ->Most config values of engine
+
+Old and new way of running docker commands
+docker container run - new way of run
+docker run - Oold way of run
 
 Images and containers
 A container is launched by running an image. An image is an executable package that includes everything
-needed to run an application--the code, a runtime, libraries, environment variables, and configuration files.
+needed to run an application the code, a runtime, libraries, environment variables, and configuration files.
 
-A container is a runtime instance of an image--what the image becomes in memory when executed
+A container is a runtime instance of an image --what the image becomes in memory when executed
 (that is, an image with state, or a user process). You can see a list of your running containers with the command,
 docker ps, just as you would in Linux.
 
+Image vs Container
+Image contains binaries, libraries and source code all make to run application
+Container is instance of that image running as process
+Docker default image registry is called docker hub(hub.docker.com)
 
 Containers and virtual machines
 A container runs natively on Linux and shares the kernel of the host machine with other containers.
@@ -41,6 +52,15 @@ sudo apt update
 sudo apt install docker-ce
 sudo usermod -aG docker $USER
 sudo docker run hello-world
+
+Uninstall docker
+sudo apt-get purge -y docker-engine docker docker.io docker-ce
+sudo apt-get autoremove -y --purge docker-engine docker docker.io docker-ce
+sudo rm -rf /var/lib/docker /etc/docker
+sudo rm /etc/apparmor.d/docker
+sudo groupdel docker
+sudo rm -rf /var/run/docker.sock
+
 
 $ docker image ls
 $ docker container ls --all
@@ -89,6 +109,7 @@ http://0.0.0.0:80
 
 $ docker container ls
 
+--> Always create docker container then start and attache to enter into the container
 Run in the background
 docker run -d -p 4000:80
 
@@ -176,3 +197,125 @@ For example, the repository we’ve used several times so far, microsoft/aspnetc
 of images with different tags in it. We can choose which one you want to pull by typing docker
 pull image-name:tag. Something similar to GitHub repo and commits. We can go back to whichever
 commit we want and pull it to the local machine.
+
+curl -fsSL get.docker.com -o get-docker-ce.sh
+RHEL EE need docker EE
+docker doesn't support normal sudo user to run command
+
+#Build docker image
+sudo docker image build -t apache:1.1 . -f Dockerfile_apache
+#Run container using the above image built
+sudo docker container run -p 8009:80 -d --name apache apache:1.1
+sudo docker container rm --force apache
+
+--publish 80:80
+first 80 port to access(expose port) in browser and second one is container port.
+docker container run --publish 80:80 nginx - fg
+docker container run --publish 80:80 --detach nginx - Service/Daemon
+sudo docker create --name centos_7 centos
+sudo docker container start centos_7
+docker container stop <containerid>
+docker container ls - List running container
+docker container ls -a - List all container stop/start
+
+Into the container
+$ sudo docker container attach 3e3e141c722a
+or
+$ sudo docker exec -it dff9974acdf0  /bin/bash
+
+docker container run --publish 80:80 --detach nginx - Service
+docker container run --publish 80:80 --detach nginx --name <name_of_container>(should be unique)
+docker container rm <container_id>
+docker container stop <container_id>(-f forcefully)
+
+docker top <image_name> - List running process in specific container
+docker container logs <container_id>
+docker container inspect <container_name> - Give the json data
+docker container stats <container_id>/<container_name>
+docker container stats - All container stats
+
+docker container run -it --name xyz ubuntu - Start new container interactively
+docker container exec -it ubuntu - Run additional command in existing container
+docker container start -ai ubuntu
+docker container exec -it 9e0153426878 bash
+
+When you start docker container in the background connecting to particular docker network and by default bridge network
+Each network routes through NAT firewall on host IP
+
+docker container port <container_id>
+docker continaer ipaddress
+
+Find IPAddress of container
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' 9e0153426878
+
+docker network ls
+docker network inspect bridge
+docker network create <create_custome_network>
+docker network ls
+docker cotainer connect <network_id> <container_id>
+docker container exec -it <frst_cotainer_id_nginx> ping <second_container_id_nginx>
+Always create custom network
+
+Image: Image is an ordered collection of root filesystem changes and the corresponding execution parameters for use within container runtime.
+Not complete os, no kernel, kernel modules(eg drivers)
+
+docker history centos
+docker image inspect centos - metadata(data about data)
+docker image tag nginx 9538253250/nginx - Create tag in the repo pointing to local
+docker push username/image
+
+build docker image using Dockerfile
+If the file is different one use -f filename
+docker build -f DockerFile_memcached
+
+sudo docker build -t apache -f Dockerfile_apache .
+sudo docker tag 36b90ca05482 9538253250/apache - Tags local image id with user registry so that can be push to registry
+sudo docker push 9538253250/apache - Push to registry
+
+DockerFile
+FROM centos:latest
+ENV A B #export A=B
+RUN ls #Execute commands
+EXPOSE 80 443
+CMD ["nginx", "-g", "daemon off;"] # This will be performed when container is launched
+WORKDIR /app -> RUN cd /app
+#Volume attach -v.
+#VOLUME /var/run/mysql
+docker container run -d --name nginx -p 80:80 -v $(pwd):/usr/share/nginx/html nginx
+
+Above all called the layers of image to build
+
+Container lifetime and Persitent data
+Two way : Data volumes and Bind mounts
+Volumes: make special location outside of container UFS
+Bind Mounts: link container path to host path
+
+sudo docker container run --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=True mysql
+
+docker volume ls
+DRIVER              VOLUME NAME
+local               58f68ed02559cdcd309ab47165407b692c4be1dfd173d18f20ac6ef0a6d4b578
+post deletiion of our container the data will be persistent
+
+sudo docker container run -d --name mysql1 -e MYSQL_ALLOW_EMPTY_PASSSWORD=True -v /var/lib/mysql mysql
+sudo docker container run -d --name mysql2 -e MYSQL_ALLOW_EMPTY_PASSSWORD=True -v mysql-db:/var/lib/mysql mysql - named volume(-v mysql-db:/var/lib/m#
+
+Bind mount
+maps host file or directory to container file or directory
+Docker_nginx and build and start container
+sudo docker build -t custom_nginx -f Dockerfile_nginx .
+sudo docker container run  -d  --name nginx -p 8075:80 -v $(pwd):/usr/share/nginx/html custom_nginx
+Change in the host file is going to take precdence
+#47 important
+
+Docker compose
+Comprised of two seperate but related things
+ 1. YAML-formatted file that describes our solution option for
+    * continers
+    * networks
+    * Volumes
+
+ 2. A CLI Tool docker-compose used for local dev/test automation with those YAML files.
+
+Docker compose is talking to the docker API in the background on behalf of docker CLI, is kind of replacement for CLI.
+
