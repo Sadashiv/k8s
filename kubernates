@@ -1,0 +1,49 @@
+Kubernetes Popular container orachestration
+Container orachestration = Make many servers act like once
+Runs on to Docker (ually) as a set of API containers
+Provides API/CLI to manage containers across servers
+kubelet: kebrenetes agent running on nodes
+Swarm doesn't need agent
+kubernetes also called k8s or k-eights
+Contorl panel: Set of containers that manage the cluster
+https://labs.play-with-k8s.com or https://www.katacoda.com
+Pod: one or more containers running together on one node
+Basic unit of deployment. Containers are always in pod
+Controller: For creating/updating pods and other projects
+Serivce: Network end point to connect to a pod
+
+Three ways to create pods from the kubectl CLI
+kubectl run (Changing to be only for pod creation)
+kubectl create (Create some resources via CLI or YAML)
+kubectl apply (Create/Update anything via YAML)
+
+
+Install kubectl
+curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+/usr/local/bin/kubectl version
+
+Install using the native package management
+Ubuntu
+
+sudo apt update && sudo apt upgrade 
+sudo apt-get update && sudo apt-get install -y apt-transport-https
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+sudo echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubectl
+kubectl  version
+which kubectl
+
+RHEL
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOF
+yum install -y kubectl

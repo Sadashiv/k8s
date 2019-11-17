@@ -1,4 +1,5 @@
 Docker Concepts:
+https://kapeli.com/cheat_sheets/Dockerfile.docset/Contents/Resources/Documents/index
 
 Docker is a platform for developers and sysadmins to develop, deploy, and run applications with containers.
 The use of Linux containers to deploy applications is called containerization.
@@ -319,3 +320,21 @@ Comprised of two seperate but related things
 
 Docker compose is talking to the docker API in the background on behalf of docker CLI, is kind of replacement for CLI.
 
+COPY and ADD are both Dockerfile instructions that serve similar purposes.
+They let you copy files from a specific location into a Docker image.
+
+COPY takes in a src and destination. It only lets you copy in a local file or directory
+from your host (the machine building the Docker image) into the Docker image itself.
+
+ADD lets you do that too, but it also supports 2 other sources.
+First, you can use a URL instead of a local file / directory.
+Secondly, you can extract a tar file from the source directly into the destination.
+
+RUN executes command(s) in a new layer and creates a new image. E.g., it is often used for installing software packages.
+CMD sets default command and/or parameters, which can be overwritten from command line when docker container runs.
+ENTRYPOINT configures a container that will run as an executable.
+ENTRYPOINT ab 
+With the ENTRYPOINT instruction, it is not possible to override the instruction during
+the docker run command execution like we are with CMD. This highlights another usage of ENTRYPOINT,
+as a method of ensuring that a specific command is executed when the container in question is started
+regardless of attempts to override the ENTRYPOINT.
