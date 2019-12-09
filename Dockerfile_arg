@@ -1,0 +1,7 @@
+#ARG VERSION=latest
+FROM centos
+#ARG VERSION
+#RUN echo $VERSION > image_version
+WORKDIR /app
+#ADD https://github.com/Sadashiv/cvs2git/blob/master/README.md /app/README.md
+ADD https://github.com/Sadashiv/cvs2git/blob/master/README.md /app

@@ -338,3 +338,37 @@ With the ENTRYPOINT instruction, it is not possible to override the instruction 
 the docker run command execution like we are with CMD. This highlights another usage of ENTRYPOINT,
 as a method of ensuring that a specific command is executed when the container in question is started
 regardless of attempts to override the ENTRYPOINT.
+
+$sudo docker container run -i -t --rm -p 80:80 nginx #Run foreground and remove container once it stops
+
+FROM ubuntu
+ENTRYPOINT ["top", "-b"]
+CMD ["-c"]
+
+$sd container run -it --rm --name test11 ubuntu top -H
+
+VOLUME
+VOLUME ["/data"]
+
+
+USER
+USER <user>[:<group>] or
+USER <UID>[:<GID>]
+
+WORKDIR
+WORKDIR /path/to/workdir
+
+WORKDIR /a
+WORKDIR b
+WORKDIR c
+RUN pwd
+The output of the final pwd command in this Dockerfile would be /a/b/c.
+
+ARG
+ARG <name>[=<default value>]
+The ARG instruction defines a variable that users can pass at build-time to the builder with the
+docker build command using the --build-arg <varname>=<value> flag. If a user specifies a build
+argument that was not defined in the Dockerfile, the build outputs a warning.
+
+
+

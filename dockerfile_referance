@@ -1,0 +1,253 @@
+Build image by command
+sudo docker build .
+
+The build is run by the Docker daemon, not by the CLI. The first thing a build process does is send
+the entire context (recursively) to the daemon. In most cases, it’s best to start with an empty directory
+as context and keep your Dockerfile in that directory. Add only the files needed for building the Dockerfile.
+
+Warning: Do not use your root directory, /, as the PATH as it causes the build to transfer the entire contents
+of your hard drive to the Docker daemon.
+
+To increase the build’s performance, exclude files and directories by adding a .dockerignore file to the context directory
+
+Traditionally, the Dockerfile is called Dockerfile and located in the root of the context.
+You use the -f flag with docker build to point to a Dockerfile anywhere in your file system.
+
+$ docker build -f /path/to/a/Dockerfile .
+
+To tag the image into multiple repositories after the build, add multiple -t parameters when you run the build command:
+$ docker build -t 9538253250/portal:1.0.2 -t 9538253250/portal:latest .
+
+The Docker daemon runs the instructions in the Dockerfile one-by-one, committing the result of each instruction
+to a new image if necessary, before finally outputting the ID of your new image. The Docker daemon will
+automatically clean up the context you sent.
+
+Whenever possible, Docker will re-use the intermediate images (cache), to accelerate the docker build process significantly.
+
+Environment replacement
+
+${variable:-word} indicates that if variable is set then the result will be that value. If variable is not set then word will be the result.
+${variable:+word} indicates that if variable is set then word will be the result, otherwise the result is the empty string. or $varaible
+
+Environment variables are supported by the following list of instructions in the Dockerfile:
+
+ADD
+COPY
+ENV
+EXPOSE
+FROM
+LABEL
+STOPSIGNAL
+USER
+VOLUME
+WORKDIR
+
+ENV abc=hello
+ENV abc=bye def=$abc
+i#ENV export def=$abc abc=bye Output varies with required state
+ENV ghi=$abc
+
+will result in def having a value of hello, not bye. However, ghi will have a value of bye because it is not part
+of the same instruction that set abc to bye.
+
+.dockerignore file
+Before the docker CLI sends the context to the docker daemon, it looks for a file named .dockerignore in the root directoryof the context.
+# comment
+*/temp*
+*/*/temp*
+temp?
+
+Lines starting with ! (exclamation mark) can be used to make exceptions to exclusions.
+The following is an example .dockerignore file that uses this mechanism:
+
+    *.md
+    !README.md
+All markdown files except README.md are excluded from the context.
+
+The placement of ! exception rules influences the behavior: the last line of the .dockerignore that matches
+a particular file determines whether it is included or excluded. Consider the following example:
+
+    *.md
+    !README*.md
+    README-secret.md
+No markdown files are included in the context except README files other than README-secret.md.
+
+Now consider this example:
+
+    *.md
+    README-secret.md
+    !README*.md
+
+Understand how ARG and FROM interact
+An ARG declared before a FROM is outside of a build stage, so it can’t be used in any instruction after a FROM.
+To use the default value of an ARG declared before the first FROM use an ARG instruction without a value inside of a build stage:
+
+RUN
+RUN has 2 forms:
+
+RUN <command> (shell form, the command is run in a shell, which by default is /bin/sh -c on Linux or cmd /S /C on Windows)
+RUN ["executable", "param1", "param2"] (exec form)
+
+The cache for RUN instructions can be invalidated by using the --no-cache flag, for example docker build --no-cache.
+
+Known issues (RUN)
+Issue 783 is about file permissions problems that can occur when using the AUFS file system.
+You might notice it during an attempt to rm a file, for example.
+
+CMD
+The CMD instruction has three forms:
+
+CMD ["executable","param1","param2"] (exec form, this is the preferred form)
+CMD ["param1","param2"] (as default parameters to ENTRYPOINT)
+CMD command param1 param2 (shell form)
+There can only be one CMD instruction in a Dockerfile. If you list more than one CMD then only the last CMD will take effect.
+
+The main purpose of a CMD is to provide defaults for an executing container.
+These defaults can include an executable, or they can omit the executable,
+in which case you must specify an ENTRYPOINT instruction as well.
+
+Note: If CMD is used to provide default arguments for the ENTRYPOINT instruction,
+both the CMD and ENTRYPOINT instructions should be specified with the JSON array format.
+
+If you would like your container to run the same executable every time, then you should consider using
+ENTRYPOINT in combination with CMD. See ENTRYPOINT.
+CMD arguments can be passed to ENTRYPOINT
+
+If you want to run your <command> without a shell then you must express the command as a JSON array and give the
+full path to the executable. This array form is the preferred format of CMD. Any additional parameters must be
+individually expressed as strings in the array:
+
+FROM ubuntu
+CMD ["/usr/bin/wc","--help"]
+
+Note: Don’t confuse RUN with CMD. RUN actually runs a command and commits the result;
+CMD does not execute anything at build time, but specifies the intended command for the image.
+
+LABEL
+LABEL <key>=<value> <key>=<value> <key>=<value> ...
+The LABEL instruction adds metadata to an image. A LABEL is a key-value pair.
+To include spaces within a LABEL value, use quotes and backslashes as you would in command-line parsing. A few usage examples:
+
+LABEL "com.example.vendor"="ACME Incorporated"
+LABEL com.example.label-with-value="foo"
+
+MAINTAINER (deprecated)
+MAINTAINER <name>
+LABEL maintainer="SvenDowideit@home.org.au"
+
+EXPOSE
+EXPOSE <port> [<port>/<protocol>...]
+EXPOSE 80/tcp or EXPOSE 80/udp
+
+The EXPOSE instruction does not actually publish the port. It functions as a type of documentation between
+the person who builds the image and the person who runs the container, about which ports are intended to be
+published. To actually publish the port when running the container, use the -p flag on docker run to publish
+and map one or more ports, or the -P flag to publish all exposed ports and map them to high-order ports.
+
+ENV
+ENV <key> <value>
+ENV <key>=<value> ...
+
+You can view the values using docker inspect, and change them using docker run --env <key>=<value>.
+
+ADD
+
+ADD has two forms:
+
+ADD [--chown=<user>:<group>] <src>... <dest>
+ADD [--chown=<user>:<group>] ["<src>",... "<dest>"] (this form is required for paths containing whitespace)
+
+Note: If your URL files are protected using authentication, you will need to use RUN wget, RUN curl or use another
+tool from within the container as the ADD instruction does not support authentication.
+
+If <src> is a local tar archive in a recognized compression format (identity, gzip, bzip2 or xz) then it is unpacked as a directory.
+Resources from remote URLs are not decompressed. When a directory is copied or unpacked, it has the same behavior as tar -x,
+the result is the union of:
+
+ADD is having auto extraction feture
+Whatever existed at the destination path and
+The contents of the source tree, with conflicts resolved in favor of “2.” on a file-by-file basis.
+
+
+COPY
+COPY has two forms:
+
+COPY [--chown=<user>:<group>] <src>... <dest>
+COPY [--chown=<user>:<group>] ["<src>",... "<dest>"] (this form is required for paths containing whitespace)
+
+Note: Multiple <src> resources may be specified but the paths of files and directories will be interpreted as
+relative to the source of the context of the build.
+
+COPY arr[[]0].txt /mydir/    # copy a file named "arr[0].txt" to /mydir/
+
+COPY test relativeDir/   # adds "test" to `WORKDIR`/relativeDir/
+COPY test /absoluteDir/  # adds "test" to /absoluteDir/
+
+COPY --chown=55:mygroup files* /somedir/
+COPY --chown=bin files* /somedir/
+COPY --chown=1 files* /somedir/
+COPY --chown=10:11 files* /somedir/
+
+ENTRYPOINT command line argument will be edited when you start container with command line arguments passing
+CMD will take command line arguments overwrites whatever comes inside the container.
+
+VOLUME
+VOLUME ["/data"]
+
+The VOLUME instruction creates a mount point with the specified name and marks it as holding externally mounted
+volumes from native host or other containers.
+
+USER
+USER <user>[:<group>] or
+USER <UID>[:<GID>]
+
+WORKDIR
+WORKDIR /path/to/workdir
+The WORKDIR instruction sets the working directory for any RUN, CMD, ENTRYPOINT, COPY and ADD instructions that
+follow it in the Dockerfile. If the WORKDIR doesn’t exist, it will be created even if it’s not used in any
+subsequent Dockerfile instruction.
+
+WORKDIR /a
+WORKDIR b
+WORKDIR c
+RUN pwd
+The output of the final pwd command in this Dockerfile would be /a/b/c.
+
+
+ARG
+ARG <name>[=<default value>]
+The ARG instruction defines a variable that users can pass at build-time to the builder with the docker build command using the
+--build-arg <varname>=<value> flag. If a user specifies a build argument that was not defined in the Dockerfile,
+the build outputs a warning.
+
+[Warning] One or more build-args [foo] were not consumed.
+
+FROM ubuntu
+ARG CONT_IMG_VER
+ENV CONT_IMG_VER v1.0.0
+RUN echo $CONT_IMG_VER
+
+docker build --build-arg CONT_IMG_VER=v2.0.1 .
+
+0: success - the container is healthy and ready for use
+1: unhealthy - the container is not working correctly
+2: reserved - do not use this exit code
+
+FROM ubuntu:18.04
+COPY . /app
+RUN make /app
+CMD python /app/app.py
+Each instruction creates one layer:
+
+FROM: creates a layer from the ubuntu:18.04 Docker image.
+COPY: adds files from your Docker client’s current directory.
+RUN: builds your application with make.
+CMD: specifies what command to run within the container.
+
+Docker LABEL concept comes into play. Docker Labels allow you to specify metadata for Docker
+objects such as Images, Containers, Volumes etc, that will be packaged in to their specific formats.
+We are interested in how we can leverage Labels for Docker Images.
+
+LABEL org.label-schema.build-date="2017-08-28T09:24:41Z"
+You can generate the current date timestamp in this format in Bash using the following command.
+date -u +'%Y-%m-%dT%H:%M:%SZ'

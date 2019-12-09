@@ -1,0 +1,61 @@
+RUN apt-get -y update
+RUN apt-get install -y python
+
+RUN apt-get -y update && apt-get install -y python
+Above line looks better and simpler in docker file
+
+Build image individually if the need is more so that we can reduce the size of an image
+If multiple image have same thing we can club into single image and make sure other image size reduces
+
+BUILD FROM A LOCAL BUILD CONTEXT, USING A DOCKERFILE FROM STDIN
+# create a directory to work in
+mkdir example
+cd example
+
+# create an example file
+touch somefile.txt
+
+# build an image using the current directory as context, and a Dockerfile passed through stdin
+docker build -t myimage:latest -f- . <<EOF
+FROM busybox
+COPY somefile.txt .
+RUN cat /somefile.txt
+EOF
+
+BUILD FROM A REMOTE BUILD CONTEXT, USING A DOCKERFILE FROM STDIN
+
+docker build -t myimage:latest -f- https://github.com/docker-library/hello-world.git <<EOF
+FROM busybox
+COPY hello.c .
+EOF
+
+Exclude with .dockerignore
+Use multi-stage builds
+Don’t install unnecessary packages
+
+Minimize the number of layers
+In older versions of Docker, it was important that you minimized the number of layers in your images to
+ensure they were performant. The following features were added to reduce this limitation:
+
+Only the instructions RUN, COPY, ADD create layers. Other instructions create temporary intermediate images,
+and do not increase the size of the build.
+
+Sort multi-line arguments
+RUN apt-get update && apt-get install -y \
+  bzr \
+  cvs \
+  git \
+  mercurial \
+  subversion
+
+Leverage build cache
+If you do not want to use the cache at all, you can use the --no-cache=true
+
+Dockerfile instructions
+FROM
+LABEL
+# Set one or more individual labels
+LABEL com.example.version="0.0.1-beta"
+RUN set -o pipefail && wget -O - https://some.site | wc -l > /number
+CMD
+

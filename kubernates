@@ -47,3 +47,10 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
 yum install -y kubectl
+
+The Kubernetes Master is a collection of three processes that run on a single node in your cluster, 
+which is designated as the master node. Those processes are: kube-apiserver, kube-controller-manager and kube-scheduler.
+Each individual non-master node in your cluster runs two processes:
+kubelet, which communicates with the Kubernetes Master.
+kube-proxy, a network proxy which reflects Kubernetes networking services on each node.
+
