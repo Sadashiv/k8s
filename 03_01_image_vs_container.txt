@@ -1,0 +1,268 @@
+Image vs Container
+
+An image is the application we want to run
+Container is an instance of that image running as a process
+You can have many containers running off the same image
+
+docker container run --publish 8000:8000 nginx
+docker container run --publish 8000:8000 --detach --name webhost nginx
+docker engine pull latest image nginx with running container,
+with publish port 8000:8000 send traffifc browser to contier
+--detach to run in the background
+first 8000 is host port and second port is 8000 with container port
+
+$ docker container logs webhost
+$ docker container top webhost
+$ docker container stop cont_id1 cont_id2 cont_id3
+$ docker container rm cont_id1 cont_id2 cont_id3
+$ docker container rm -f cont_id1 cont_id2 cont_id3
+$ docker container top 61d98269d915
+$ docker container inspect nginx
+$ docker container stats
+
+
+$ docker container exec -it  container_id bash
+$ docker container run -it --name container_name nginx bash
+$ docker container run -it --name ubuntu_container ubuntu
+$ docker container start -ai ubuntu #Start running which installed and saved
+
+#When you start docker container it connects background connects to private virtual network "bridge"
+#Each virtual network routes through NAT firewall on host IP
+
+$ docker container port nginx_name
+#List of ports running in container
+#Get Docker IPAddress
+$ docker container inspect --format '{{ .NetworkSettings.IPAddress }}' nginx_name2
+
+$ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+1c2192f1337e        bridge              bridge              local
+1cfee3955615        docker_gwbridge     bridge              local
+ff08f995eb30        host                host                local
+heltu1niircz        ingress             overlay             swarm
+9ed366c16a7d        none                null                local
+
+$ docker network inspect bridge
+#List the containers running on the bridge
+
+$ docker network create my_network
+258a6a350aeb05d8e2c399977d40300b871e98c51ede837378d31c5afc96de8b
+
+$ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+1c2192f1337e        bridge              bridge              local
+1cfee3955615        docker_gwbridge     bridge              local
+ff08f995eb30        host                host                local
+heltu1niircz        ingress             overlay             swarm
+258a6a350aeb        my_network          bridge              local
+9ed366c16a7d        none                null                local
+
+$ docker network connect my_network 80a24f3dbaae
+$ docker network disconnect my_network 80a24f3dbaae
+$ docker container inspect 80a24f3dbaae
+
+Docker DNS, Docker container generates the random IP and sometimes we destroy and re-create containers.
+It's to complicated to have the relying on IPaddress for containers
+
+
+$ docker container run -d -it --name my_nginx3  --network my_network nginx
+$ docker network inspect my_network my_nginx3
+#Docker container my_nginx3 will have the automatic feature to resolve DNS
+
+$ docker container run -d -it --name my_nginx4 nginx
+
+$ docker container exec -it my_nginx3 ping my_nginx4
+$ docker container exec -it my_nginx4 ping my_nginx3
+
+Basically hostname resolution will happen
+
+Need to do more exersie on docker container.
+
+$ docker container run --rm -it ubuntu bash
+$ docker container run --rm -it centos:7 bash
+yum update && yum install curl
+apt-get update && apt-get install curl
+
+What is an Images
+App binaries and dependencies
+metatdata about the image data how to run the image
+official definition: An image is ordered collection of root filesystem changes
+and the corresponding execution of parameters for use within container runtime
+Not complete OS. No kernel, kernal modules (e.g. drivers)
+Small as one file(your app binary) like golang static binary
+
+$ docker history centos
+IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
+0f3e07c0138f        14 months ago       /bin/sh -c #(nop)  CMD ["/bin/bash"]            0B
+<missing>           14 months ago       /bin/sh -c #(nop)  LABEL org.label-schema.sc…   0B
+<missing>           14 months ago       /bin/sh -c #(nop) ADD file:d6fdacc1972df524a…   220MB
+
+$ docker inspect centos
+
+$ docker pull nginx
+$ docker image tag nginx 9538253250/nginx:testing else takes it as latest
+$ docker image push  9538253250/nginx
+
+Docker file and build
+$ docker image build -t customnginx .
+$ docker image build -t customnginx2 -f new_dockerfile
+
+Defining the steps in the order to exeucte docker file is more important
+
+$ docker container run -it -d -e MYSQL_ALLOW_EMPTY_PASSWORD=True  mysql
+$ docker container inspect de3347085f5
+
+Named Volume: -v mysql-db:/var/lib/mysql
+Mounting volume: -v /var/lib/mysql
+$ docker container run -it -d --name mysql1 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v /var/lib/mysql  mysql
+$ docker container run -it -d --name mysql2 -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v mysql-db:/var/lib/mysql  mysql
+
+$ docker contianer inspect mysql
+$ docker contianer inspect mysql2
+
+Bind mounting can be done host to container
+After delete of container still you can see the bind mounting which was mounted.
+Can't use in Dockerfile, must be contianer run
+
+docker container start -ai 0105431e6d0f1
+
+#Swarm is orachtestration in built on top of docker by default it is disabled, to enable
+$ doocker swarm init
+
+$ docker swarm init
+WARNING: Error loading config file: /home/sadashiv/.docker/config.json: open /home/sadashiv/.docker/config.json: permission denied
+Error response from daemon: could not choose an IP address to advertise since this system has multiple addresses on interface wlp5s0 (2409:4071:d9a:a7e7:7402:1e1b:9fed:5287 and 2409:4071:d9a:a7e7:e360:fed9:2d82:f51e) - specify one with --advertise-addr
+
+$ docker swarm init --advertise-addr 172.19.0.1
+#When docker host has multiple ipaddress associted swarm will not understand which IP to pickeup,
+We need to pass --advertise-addr IPAddress
+
+$ docker node ls
+ID                            HOSTNAME                 STATUS              AVAILABILITY        MANAGER STATUS      ENGINE VERSION
+8ku5xbvkzr0u7e04dejehk3qx *   sadashiv-ThinkPad-E480   Ready               Active              Leader              19.03.13
+
+$ docker service create alpine ping 8.8.8.8
+w7j8uf67x1zj85zjpha84nv5a
+overall progress: 1 out of 1 tasks
+1/1: running   [==================================================>]
+verify: Service converged
+
+$ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+w7j8uf67x1zj        clever_knuth        replicated          1/1                 alpine:latest
+
+$ docker service ps w7j8uf67x1zj85zjpha84nv5a
+ID                  NAME                IMAGE               NODE                     DESIRED STATE       CURRENT STATE           ERROR               PORTS
+br444phj05vs        clever_knuth.1      alpine:latest       sadashiv-ThinkPad-E480   Running             Running 2 minutes ago
+
+
+$ docker container ls
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                 NAMES
+b2ea4a22f90e        alpine:latest       "ping 8.8.8.8"           3 minutes ago       Up 3 minutes                              clever_knuth.1.br444phj05vscv0wac5wywams
+
+$ docker service update w7j8uf67x1zj85zjpha84nv5a --replicas 3
+w7j8uf67x1zj85zjpha84nv5a
+overall progress: 3 out of 3 tasks
+1/3: running   [==================================================>]
+2/3: running   [==================================================>]
+3/3: running   [==================================================>]
+verify: Service converged
+
+$ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+w7j8uf67x1zj        clever_knuth        replicated          3/3                 alpine:latest
+
+$ docker service ps w7j8uf67x1zj
+ID                  NAME                IMAGE               NODE                     DESIRED STATE       CURRENT STATE            ERROR               PORTS
+br444phj05vs        clever_knuth.1      alpine:latest       sadashiv-ThinkPad-E480   Running             Running 5 minutes ago
+yip1mqjvunbd        clever_knuth.2      alpine:latest       sadashiv-ThinkPad-E480   Running             Running 27 seconds ago
+ucy4vg2m6dcv        clever_knuth.3      alpine:latest       sadashiv-ThinkPad-E480   Running             Running 28 seconds ago
+
+$ docker update --help #Related to resource to update cpu, memory
+$ docker service update  --help #Lot more options to update
+
+$ docker container ls
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                 NAMES
+c06d7099527d        alpine:latest       "ping 8.8.8.8"           6 minutes ago       Up 6 minutes                              clever_knuth.2.yip1mqjvunbda6boo8hnok8gb
+ade73cfed9ee        alpine:latest       "ping 8.8.8.8"           6 minutes ago       Up 6 minutes                              clever_knuth.3.ucy4vg2m6dcv6rfcs1pkk4ren
+b2ea4a22f90e        alpine:latest       "ping 8.8.8.8"           11 minutes ago      Up 11 minutes                             clever_knuth.1.br444phj05vscv0wac5wywams
+
+
+#Background delete container
+$ docker container rm -f clever_knuth.1.br444phj05vscv0wac5wywams
+clever_knuth.1.br444phj05vscv0wac5wywams
+
+$ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+w7j8uf67x1zj        clever_knuth        replicated          2/3                 alpine:latest
+
+#Swarm orachestration immediatley brings the new docker contianer up which went down
+$ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+w7j8uf67x1zj        clever_knuth        replicated          3/3                 alpine:latest
+
+
+$ docker service ps clever_knuth
+ID                  NAME                 IMAGE               NODE                     DESIRED STATE       CURRENT STATE           ERROR                         PORTS
+cclz6bwddpfi        clever_knuth.1       alpine:latest       sadashiv-ThinkPad-E480   Running             Running 2 minutes ago
+br444phj05vs         \_ clever_knuth.1   alpine:latest       sadashiv-ThinkPad-E480   Shutdown            Failed 3 minutes ago    "task: non-zero exit (137)"
+yip1mqjvunbd        clever_knuth.2       alpine:latest       sadashiv-ThinkPad-E480   Running             Running 9 minutes ago
+ucy4vg2m6dcv        clever_knuth.3       alpine:latest       sadashiv-ThinkPad-E480   Running             Running 9 minutes ago
+
+$ docker service rm clever_knuth
+clever_knuth
+
+$ docker service ls
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+
+
+Creating 3-Node Swarm: Host options
+
+$ docker swarm init --advertise-addr 172.19.0.1
+Swarm initialized: current node (aqki749orgm8g4g3ovw2hto6r) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-2lmgnos9o4v3k6jucyii2xskvb4pny9dvoz2wqtut79byuf95f-3asdjiugrfaewcm782hsqlpa5 172.19.0.1:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+
+One manager many workers wee can add
+
+Other two servers we execut above command with below
+server2 and server3 workers can't be used any swarm commands
+
+$ docker node update --role manager node2
+$ docker node ls
+
+$ docker swarm join-token manager
+To add a manager to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-2lmgnos9o4v3k6jucyii2xskvb4pny9dvoz2wqtut79byuf95f-68cmpbavgc83mq1062bnfbap3 172.19.0.1:2377
+
+
+
+$ docker service create --replicas 3 alpine ping 8.8.8.8
+will run on node1, node2, node3
+
+Overlay network used for swarm wide containers to interact with other
+$ docker network create --driver overlay app
+r32o1qzbdlrgwhafs6rbham8b
+
+$ docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+r32o1qzbdlrg        app                 overlay             swarm
+1c2192f1337e        bridge              bridge              local
+be16976acc55        docker_default      bridge              local
+1cfee3955615        docker_gwbridge     bridge              local
+ff08f995eb30        host                host                local
+huhv9erlfchn        ingress             overlay             swarm
+258a6a350aeb        my_network          bridge              local
+9ed366c16a7d        none                null                local
+
+Routing mesh
+
+docker swarm requires version 3
+docker stack deploy yamlfile voteapp
+
+
