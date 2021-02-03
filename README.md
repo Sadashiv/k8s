@@ -54,6 +54,17 @@ sudo apt install docker-ce
 sudo usermod -aG docker $USER
 sudo docker run hello-world
 
+
+curl -L https://github.com/docker/machine/releases/download/v0.12.2/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine &&
+chmod +x /tmp/docker-machine &&
+sudo cp /tmp/docker-machine /usr/local/bin/docker-machine
+
+curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+docker-compose --version
+
+
 Uninstall docker
 sudo apt-get purge -y docker-engine docker docker.io docker-ce
 sudo apt-get autoremove -y --purge docker-engine docker docker.io docker-ce
@@ -63,17 +74,16 @@ sudo groupdel docker
 sudo rm -rf /var/run/docker.sock
 
 
-$ docker image ls
-$ docker container ls --all
+$ docker image ls<br/>
+$ docker container ls --all<br/>
 
 Recap and cheat sheet
 ## List Docker CLI commands
-docker
 docker container --help
 
 ## Display Docker version and info
-docker --version
-docker version
+docker --version<br/>
+docker version<br/>
 docker info
 
 ## Execute Docker image
@@ -83,25 +93,25 @@ docker run hello-world
 docker image ls
 
 ## List Docker containers (running, all, all in quiet mode)
-docker container ls
-docker container ls --all
-docker container ls -aq
+docker container ls<br/>
+docker container ls --all<br/>
+docker container ls -aq<br/>
 
 Build Image
-docker build --tag=flaskhapp:v0.0.1 .
+docker build -t apache:v1.5 -f Dockerfile_apache .<br/>
+docker image build -t apache:v1.5 -f Dockerfile_apache . --no-cache=true<br/>
 
 # Set proxy server, replace host:port with values for your servers
-ENV http_proxy host:port
-ENV https_proxy host:port
+ENV http_proxy host:port<br/>
+ENV https_proxy host:port<br/>
 
-DNS Settings
+DNS Settings<br/>
 /etc/docker/daemon.json with the dns key, as following:
 
 {
   "dns": ["your_dns_address", "8.8.8.8"]
 }
 
-Run the app
 Run the app, mapping your machine’s port 4000 to the container’s published port 80 using -p:
 
 docker run -p 4000:80 flask
@@ -123,122 +133,123 @@ The docker CLI uses Docker’s public registry by default.
 
 docker tag image username/repository:tag
 
-Push image to public
+Push image to public<br/>
 docker push username/repository:tag
 
-Run docker container
+Run docker container<br/>
 docker run -p 5000:80 9538253250/testing:latest
 
-Get the ipaddress of docker container
+Get the ipaddress of docker container<br/>
 docker inspect  2c8f59c4cd14 | grep IPAddress
 
-docker run --name containername -it  centos /bin/bash
+docker run --name containername -it  centos /bin/bash<br/>
 docker run --name pso -it psoportal:v0.0.1 /bin/bash
 
-docker swarm init
-docker swarm leave
-docker swarm leave --force
-docker swarm join --token SWMTKN-1-4i4knr4xnbz7ti8tgw8utc1243r13kbd8ui1tb7vmapr7njdw0-der121xbosee0fg0x6bn7ce5n 192.168.0.7:2377
+docker swarm init<br/>
+docker swarm leave<br/>
+docker swarm leave --force<br/>
+docker swarm join --token SWMTKN-1-4i4knr4xnbz7ti8tgw8utc1243r13kbd8ui1tb7vmapr7njdw0-der121xbosee0fg0x6bn7ce5n 192.168.0.7:2377<br/>
 docker swarm join-token manager
 
-$ vim docker-compose.yaml
-$ docker stack deploy -c docker-compose.yaml getwebapp
-Creating network getwebapp_webnet
-Creating service getwebapp_web
+$ vim docker-compose.yaml<br/>
+$ docker stack deploy -c docker-compose.yaml getwebapp<br/>
+Creating network getwebapp_webnet<br/>
+Creating service getwebapp_web<br/>
 $ docker container ls
-CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-[sadashiv@sadashiv-ThinkPad-E480 docker (master #)]$ docker image ls
-REPOSITORY           TAG                 IMAGE ID            CREATED             SIZE
-psoportal            v0.0.1              0b00f67f0940        50 minutes ago      578MB
-9538253250/testing   latest              6e68729d7a56        29 hours ago        148MB
-flask                latest              6e68729d7a56        29 hours ago        148MB
-testing              latest              6e68729d7a56        29 hours ago        148MB
-python               2.7-slim            f462855313cd        2 weeks ago         137MB
-centos               latest              67fa590cfc1c        5 weeks ago         202MB
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES<br/>
+[sadashiv@sadashiv-ThinkPad-E480 docker (master #)]$ docker image ls<br/>
+REPOSITORY           TAG                 IMAGE ID            CREATED             SIZE<br/>
+psoportal            v0.0.1              0b00f67f0940        50 minutes ago      578MB<br/>
+9538253250/testing   latest              6e68729d7a56        29 hours ago        148MB<br/>
+flask                latest              6e68729d7a56        29 hours ago        148MB<br/>
+testing              latest              6e68729d7a56        29 hours ago        148MB<br/>
+python               2.7-slim            f462855313cd        2 weeks ago         137MB<br/>
+centos               latest              67fa590cfc1c        5 weeks ago         202MB<br/>
 hello-world          latest              fce289e99eb9        9 months ago        1.84kB
 
-$ docker service ls
-ID                  NAME                MODE                REPLICAS            IMAGE                       PORTS
-1kv11tg86qtm        getwebapp_web       replicated          5/5                 9538253250/testing:latest   *:4000->80/tcp
+$ docker service ls<br/>
+ID                  NAME                MODE                REPLICAS            IMAGE                       PORTS<br/>
+1kv11tg86qtm        getwebapp_web       replicated          5/5                 9538253250/testing:latest   *:4000->80/tcp<br/>
 
 $ docker stack services getwebapp
-ID                  NAME                MODE                REPLICAS            IMAGE                       PORTS
-1kv11tg86qtm        getwebapp_web       replicated          5/5                 9538253250/testing:latest   *:4000->80/tcp
+ID                  NAME                MODE                REPLICAS            IMAGE                       PORTS<br/>
+1kv11tg86qtm        getwebapp_web       replicated          5/5                 9538253250/testing:latest   *:4000->80/tcp<br/>
 
-$ docker service ps getwebapp_web
-ID                  NAME                IMAGE                       NODE                     DESIRED STATE       CURRENT STATE           ERROR               PORTS
-o3k1cqgn0icz        getwebapp_web.1     9538253250/testing:latest   sadashiv-ThinkPad-E480   Running             Running 7 minutes ago
-azf2d28tgyas        getwebapp_web.2     9538253250/testing:latest   sadashiv-ThinkPad-E480   Running             Running 7 minutes ago
-x906d5yuizk2        getwebapp_web.3     9538253250/testing:latest   sadashiv-ThinkPad-E480   Running             Running 7 minutes ago
-le5wsh2za9o3        getwebapp_web.4     9538253250/testing:latest   sadashiv-ThinkPad-E480   Running             Running 7 minutes ago
-6pqrm99y44wa        getwebapp_web.5     9538253250/testing:latest   sadashiv-ThinkPad-E480   Running             Running 7 minutes ago
+$ docker service ps getwebapp_web<br/>
+ID                  NAME                IMAGE                       NODE                     DESIRED STATE       CURRENT STATE           ERROR               PORTS<br/>
+o3k1cqgn0icz        getwebapp_web.1     9538253250/testing:latest   sadashiv-ThinkPad-E480   Running             Running 7 minutes ago<br/>
+azf2d28tgyas        getwebapp_web.2     9538253250/testing:latest   sadashiv-ThinkPad-E480   Running             Running 7 minutes ago<br/>
+x906d5yuizk2        getwebapp_web.3     9538253250/testing:latest   sadashiv-ThinkPad-E480   Running             Running 7 minutes ago<br/>
+le5wsh2za9o3        getwebapp_web.4     9538253250/testing:latest   sadashiv-ThinkPad-E480   Running             Running 7 minutes ago<br/>
+6pqrm99y44wa        getwebapp_web.5     9538253250/testing:latest   sadashiv-ThinkPad-E480   Running             Running 7 minutes ago<br/>
 
-$ docker container ls -q
-174611f33d37
-7dddb75553ae
-85a89bcc3c38
-92598eb43dd6
+$ docker container ls -q<br/>
+174611f33d37<br/>
+7dddb75553ae<br/>
+85a89bcc3c38<br/>
+92598eb43dd6<br/>
 fbc1ef55e56b
 
 
-docker stack ls                                            # List stacks or apps
-docker stack deploy -c <composefile> <appname>  # Run the specified Compose file
-docker service ls                 # List running services associated with an app
-docker service ps <service>                  # List tasks associated with an app
-docker inspect <task or container>                   # Inspect task or container
-docker container ls -q                                      # List container IDs
-docker stack rm <appname>                             # Tear down an application
+docker stack ls                                            # List stacks or apps<br/>
+docker stack deploy -c <composefile> <appname>  # Run the specified Compose file<br/>
+docker service ls                 # List running services associated with an app<br/>
+docker service ps <service>                  # List tasks associated with an app<br/>
+docker inspect <task or container>                   # Inspect task or container<br/>
+docker container ls -q                                      # List container IDs<br/>
+docker stack rm <appname>                             # Tear down an application<br/>
 docker swarm leave --force      # Take down a single node swarm from the manager
 
-Docker Registry (Docker Trusted Registry – DTR) is an enterprise-grade storage solution for Docker images.
+Docker Registry (Docker Trusted Registry – DTR) is an enterprise-grade storage solution for Docker images.<br/>
 In other words, it’s an image storage service. Think about GitHub, but for Docker Images.
 
-Docker Repository is a collection of Docker images with the same name and different tags.
-For example, the repository we’ve used several times so far, microsoft/aspnetcore has a bunch
-of images with different tags in it. We can choose which one you want to pull by typing docker
-pull image-name:tag. Something similar to GitHub repo and commits. We can go back to whichever
+Docker Repository is a collection of Docker images with the same name and different tags.<br/>
+For example, the repository we’ve used several times so far, microsoft/aspnetcore has a bunch<br/>
+of images with different tags in it. We can choose which one you want to pull by typing docker<br/>
+pull image-name:tag. Something similar to GitHub repo and commits. We can go back to whichever<br/>
 commit we want and pull it to the local machine.
 
-curl -fsSL get.docker.com -o get-docker-ce.sh
-RHEL EE need docker EE
+curl -fsSL get.docker.com -o get-docker-ce.sh<br/>
+RHEL EE need docker EE<br/>
 docker doesn't support normal sudo user to run command
 
-#Build docker image
+## Build docker image
 sudo docker image build -t apache:1.1 . -f Dockerfile_apache
-#Run container using the above image built
-sudo docker container run -p 8009:80 -d --name apache apache:1.1
-sudo docker container rm --force apache
 
---publish 80:80
-first 80 port to access(expose port) in browser and second one is container port.
-docker container run --publish 80:80 nginx - fg
-docker container run --publish 80:80 --detach nginx - Service/Daemon
-sudo docker create --name centos_7 centos
-sudo docker container start centos_7
-docker container stop <containerid>
-docker container ls - List running container
-docker container ls -a - List all container stop/start
+## Run container using the above image built
+sudo docker container run -p 8009:80 -d --name apache apache:1.1<br/>
+sudo docker container rm --force apache<br/>
 
-Into the container
-$ sudo docker container attach 3e3e141c722a
-or
+--publish 80:80<br/>
+first 80 port to access(expose port) in browser and second one is container port.<br/>
+docker container run --publish 80:80 nginx -> fg<br/>
+docker container run --publish 80:80 --detach nginx - Service/Daemon<br/>
+sudo docker create --name centos_7 centos<br/>
+sudo docker container start centos_7<br/>
+docker container stop <containerid><br/>
+docker container ls - List running container<br/>
+docker container ls -a - List all container stop/start<br/>
+
+Into the container<br/>
+$ sudo docker container attach 3e3e141c722a<br/>
+or<br/>
 $ sudo docker exec -it dff9974acdf0  /bin/bash
 
-docker container run --publish 80:80 --detach nginx - Service
-docker container run --publish 80:80 --detach nginx --name <name_of_container>(should be unique)
-docker container rm <container_id>
+docker container run --publish 80:80 --detach nginx - Service<br/>
+docker container run --publish 80:80 --detach nginx --name <name_of_container>(should be unique)<br/>
+docker container rm <container_id><br/>
 docker container stop <container_id>(-f forcefully)
 
-docker top <image_name> - List running process in specific container
-docker container logs <container_id>
-docker container inspect <container_name> - Give the json data
-docker container stats <container_id>/<container_name>
-docker container stats - All container stats
+docker top <image_name> - List running process in specific container<br/>
+docker container logs <container_id><br/>
+docker container inspect <container_name> - Give the json data<br/>
+docker container stats <container_id>/<container_name><br/>
+docker container stats - All container stats<br/>
 
-docker container run -it --name xyz ubuntu - Start new container interactively
-docker container exec -it ubuntu - Run additional command in existing container
-docker container start -ai ubuntu
-docker container exec -it 9e0153426878 bash
+docker container run -it --name xyz ubuntu - Start new container interactively<br/>
+docker container exec -it ubuntu - Run additional command in existing container<br/>
+docker container start -ai ubuntu<br/>
+docker container exec -it 9e0153426878 bash<br/>
 
 When you start docker container in the background connecting to particular docker network and by default bridge network
 Each network routes through NAT firewall on host IP
@@ -329,6 +340,7 @@ from your host (the machine building the Docker image) into the Docker image its
 ADD lets you do that too, but it also supports 2 other sources.
 First, you can use a URL instead of a local file / directory.
 Secondly, you can extract a tar file from the source directly into the destination.
+add python27.tar.gx /app
 
 RUN executes command(s) in a new layer and creates a new image. E.g., it is often used for installing software packages.
 CMD sets default command and/or parameters, which can be overwritten from command line when docker container runs.
@@ -369,6 +381,3 @@ ARG <name>[=<default value>]
 The ARG instruction defines a variable that users can pass at build-time to the builder with the
 docker build command using the --build-arg <varname>=<value> flag. If a user specifies a build
 argument that was not defined in the Dockerfile, the build outputs a warning.
-
-
-
