@@ -5,6 +5,28 @@ Docker is a platform for developers and sysadmins to develop, deploy, and run ap
 The use of Linux containers to deploy applications is called containerization.
 Containers are not new, but their use for easily deploying applications is.
 
+Docker is an open-source software designed to facilitate and simplify application development.
+It is a set of platform-as-a-service products that create isolated virtualized environments for building, deploying, and testing applications.
+
+
+What is a Docker Image?
+A Docker image is an immutable (unchangeable) file that contains the source code, libraries, dependencies, tools, 
+and other files needed for an application to run.
+Docker image template/read-only/snapshots
+
+A Docker container is a virtualized run-time environment where users can isolate applications from the underlying system.
+These containers are compact, portable units in which you can start up an application quickly and easily.
+
+
+Unlike virtual machines (VMs) where virtualization happens at the hardware level, containers virtualize at the app layer.
+They can utilize one machine, share its kernel, and virtualize the operating system to run isolated processes.
+This makes containers extremely lightweight, allowing you to retain valuable resources.
+
+Minikube installation
+URL: https://minikube.sigs.k8s.io/docs/start/
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
+sudo dpkg -i minikube_latest_amd64.deb
+
 Containerization is increasingly popular because containers are:
 
 Flexible: Even the most complex applications can be containerized.
@@ -289,7 +311,7 @@ FROM centos:latest
 ENV A B #export A=B
 RUN ls #Execute commands
 EXPOSE 80 443
-CMD ["nginx", "-g", "daemon off;"] # This will be performed when container is launched
+CMD ["nginx", "-g", "daemon off;"] # This will be performed when container is launched. Basically we can overwrite command
 WORKDIR /app -> RUN cd /app
 #Volume attach -v.
 #VOLUME /var/run/mysql
@@ -354,7 +376,7 @@ regardless of attempts to override the ENTRYPOINT.
 $sudo docker container run -i -t --rm -p 80:80 nginx #Run foreground and remove container once it stops
 
 FROM ubuntu
-ENTRYPOINT ["top", "-b"]
+ENTRYPOINT ["top", "-b"] #Append with command
 CMD ["-c"]
 
 $sd container run -it --rm --name test11 ubuntu top -H
@@ -381,3 +403,7 @@ ARG <name>[=<default value>]
 The ARG instruction defines a variable that users can pass at build-time to the builder with the
 docker build command using the --build-arg <varname>=<value> flag. If a user specifies a build
 argument that was not defined in the Dockerfile, the build outputs a warning.
+
+Login or configure custom docker registery
+docker login [server]
+

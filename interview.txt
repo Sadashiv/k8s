@@ -1,0 +1,14 @@
+Create custom image from centos7 base image , if i delete custom image will it delete base image?
+On custom image deletion base image will not deleted
+
+
+docker run -d --restart=unless-stopped -p 8081:8080 rancher/server:stable
+fa3d3de0b852f79f481f175550728654f3253fad9a87bb1a596f514b788d1999
+
+docker run -d --restart=unless-stopped -p 8081:8080 rancher/server:stable
+fa42fd86ccd4af93c039419938db43a07d02ea2681994aef015563ff33263e75
+
+docker: Error response from daemon: driver failed programming external connectivity on endpointsuspicious_buck
+(4dbd879088f534fbf484da5d4236f5b356aac097d166cf7cea7a65c77115c3d3): Bind for 0.0.0.0:8081 failed: port is already allocated.
+
+Can't run same port multiple containers
