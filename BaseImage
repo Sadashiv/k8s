@@ -1,4 +1,0 @@
-FROM django
-
-
-CMD ["Hello Wrold"]

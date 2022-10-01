@@ -364,3 +364,4 @@ ContainersReady: all containers in the Pod are ready.
 Initialized: all init containers have started successfully.
 Ready: the Pod is able to serve requests and should be added to the load balancing pools of all matching Services.
 
+kubectl create deployment simpladd-deployment --image=9538253250/simpleapp:1.0 --dry-run=client -o yaml

@@ -6,7 +6,7 @@ metadata:
     app: simpleapp-deployment
 
 spec:
-  replicas: 3
+  replicas: 5
   selector:
     matchLabels:
       app: simpleapp-deployment
@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: simpleapp-container-deployment
-        image: 9538253250/simpleapp:latest
+        image: 9538253250/simpleapp:1.0
         ports:
           - containerPort: 8000
         command: ["sleep2.0"] #Entrypoint
