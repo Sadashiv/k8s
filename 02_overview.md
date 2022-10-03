@@ -4,7 +4,7 @@ Kubernetes is a portable, extensible, open source platform for managing containe
 Kubernetes Popular container orachestration or managing containerized workloads and services
 Container orachestration = Make many servers act like once
 
-![Going back in time](images/container_evolution.png)
+![Going back in time](images/container_evolution.svg)
 
 Runs on to Docker (usually) as a set of API containers
 Provides API/CLI to manage containers across servers
