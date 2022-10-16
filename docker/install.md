@@ -1,0 +1,36 @@
+Uinstall docker if it's already installed
+=========================================
+dpkg -l | grep -i docker
+sudo apt-get purge -y docker-engine docker docker.io docker-ce docker-ce-cli docker-compose-plugin
+sudo apt-get autoremove -y --purge docker-engine docker docker.io docker-ce docker-compose-plugin
+sudo rm -rf /var/lib/docker /etc/docker
+sudo rm /etc/apparmor.d/docker
+sudo groupdel docker
+sudo rm -rf /var/run/docker.sock
+sudo apt autoremove -y
+
+Note: Please reboot your system thorugh UI or sudo shutdown -r now
+
+
+Install docker latest version
+=============================
+sudo apt-get update -y
+sudo apt-get install ca-certificates curl gnupg lsb-release -y
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update -y
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+
+Check the status of docker service
+sudo systemctl status docker
+docker --version
+
+Note: This is for only the installing docker particular version, require when you want to upgrade or downgrade
+apt-cache madison docker-ce -> List docker versions
+
+Installed docker version 20.10.19
+sudo apt-get install docker-ce=5:20.10.19~3-0~ubuntu-focal docker-ce-cli=5:20.10.19~3-0~ubuntu-focal containerd.io docker-compose-plugin
+
+More info refer documentation: https://docs.docker.com/engine/install/ubuntu/
