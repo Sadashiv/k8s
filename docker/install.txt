@@ -27,10 +27,30 @@ Check the status of docker service
 sudo systemctl status docker
 docker --version
 
+Verify docker is running
+sudo docker run hello-world
+
 Note: This is for only the installing docker particular version, require when you want to upgrade or downgrade
+
 apt-cache madison docker-ce -> List docker versions
 
 Installed docker version 20.10.19
 sudo apt-get install docker-ce=5:20.10.19~3-0~ubuntu-focal docker-ce-cli=5:20.10.19~3-0~ubuntu-focal containerd.io docker-compose-plugin
+sudo service docker restart or sudo systemctl restart docker
+sudo docker run hello-world
+
+docker images => will error Got permission denied while trying to connect to the Docker daemon socket
+
+creating aliases
+
+in ~/.bash Add => docker='sudo docker'
+source ~/.bashrc
+docker images
+
+making sudo user passwordless
+add below lines to sudo vim /etc/sudoers
+<sudo_user_name>  ALL=(ALL) NOPASSWD: ALL
+sudo    ALL=(ALL:ALL) NOPASSWD: ALL
+
 
 More info refer documentation: https://docs.docker.com/engine/install/ubuntu/
