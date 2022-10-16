@@ -1,0 +1,43 @@
+kubectl auth can-i list nodes --as michelle
+Warning: resource 'nodes' is not namespace scoped
+no
+
+kubectl get clustreroles
+kubectl get clusterrole --no-headers |wc -l
+kubectl get clusterrolebindings --no-headers |wc -l
+kubectl edit clusterrole cluster-admin
+kubectl describe clusterrolebinding cluster-admin
+kubectl describe clusterrole cluster-admin
+kubectl auth can-i list nodes --as michelle
+
+kubectl get serviceaccount
+kubectl describe token default
+kubectl describe serviceaccount default
+kubectl get pods
+kubectl describe pod web-dashboard-68f98dc77c-gjjz6
+kubectl get pods
+kubectl exec -it web-dashboard-68f98dc77c-gjjz6 logs
+kubectl get po -o yaml
+kubectl get po -o yaml|grep /var
+kubectl create serviceaccount dashboard-sa
+kubectl create token dashboard-sa
+kubectl edit serviceaccount web-dashboard
+kubectl edit serviceaccount dashboard-sa
+
+kubectl get registry
+kubectl get pods
+kubectl describe pod web-bd975bd87-p2cth
+kubectl edit deployment
+kubectl get pods
+kubectl create secret docker-registry private-reg-cred --docker-username=dock_user --docker-password=dock_password --docker-server=myprivateregistry.com:5000 --docker-email=dock_user@myprivateregistry.com
+
+containers are not having same previlage as host user
+docker run --previleged
+docker run --cap-add=MAC_ADDR
+in docker file add USER 1000 to run container level default
+
+kubectl get pods
+kubectl describe pod ubuntu-sleeper
+kubectl get pods -a
+kubectl edit deployment
+kubectl exec -it ubuntu-sleeper -- whoami

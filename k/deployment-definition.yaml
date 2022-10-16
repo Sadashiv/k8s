@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: simpleapppod
+  name: simpleapp
   labels:
     app: simpleapp-deployment
 
@@ -19,8 +19,8 @@ spec:
     spec:
       containers:
       - name: simpleapp-container-deployment
-        image: 9538253250/simpleapp:1.0
+        image: 9538253250/simpleapp:2.0
         ports:
           - containerPort: 8000
-        command: ["sleep2.0"] #Entrypoint
-        args: ["10"] #cmd line arugument
+        #command: ["sleep2.0"] #Entrypoint
+        #args: ["10"] #cmd line arugument

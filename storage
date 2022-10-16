@@ -1,0 +1,7 @@
+kubectl get pods
+kubectl exec webapp -- cat /log/app.log
+kubectl get pv
+kubectl get pv,pvc
+kubectl delete pvc claim-log-1
+kubectl get pvc
+

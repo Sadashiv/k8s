@@ -69,6 +69,8 @@ Kubernetes object descirbe below
   The resources available to those applications
   The policies around how those applications behave, such as restart policies, upgrades, and fault-tolerance
 
+A Pod is the basic building block of Kubernetes–the smallest and simplest unit in the Kubernetes object model that you create or deploy.
+
 apiVersion - Which version of the Kubernetes API you're using to create this object
 kind - What kind of object you want to create
 metadata - Data that helps uniquely identify the object, including a name string, UID, and optional namespace

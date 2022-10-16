@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: simpleapp-rs
+  labels:
+    app: simpleapp-rs
+    tier: simpleapp-rs
+
+spec:
+#  replicas: 5
+  selector:
+    matchLabels:
+      tier: simpleapp-rs
+  template:
+    metadata:
+      labels:
+        tier: simpleapp-rs
+    spec:
+      containers:
+      - name: simpleapp-rs
+        image: 9538253250/simpleapp:1.0
+        ports:
+        - containerPort: 8000
+
+
+
+
+

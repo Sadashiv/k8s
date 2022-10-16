@@ -1,0 +1,26 @@
+Upgrade Master
+=============
+kubeadm upgrade plan
+kubectl drain controlplane --ignore-daemonsets
+kubectl get nodes
+apt-get upgrade kubelet
+apt-get install kubeadm==1.24.0-00
+apt-get  install kubelet=1.24.0-00
+systemctl restart daemon-reload
+systemctl restart kubelet
+
+kubectl uncordon controlplane
+
+
+kubectl drain node01
+kubectl drain node01 --ignore-daemonsets
+kubectl uncordon node01
+
+
+kubeadm upgrade plan
+apt-get update
+apt-get install kubeadm=1.24.0-00
+kubeadm upgrade node
+apt-get install kubelet=1.24.0-00
+systemctl daemon-reload
+systemctl restart kubelet
