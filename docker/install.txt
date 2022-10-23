@@ -43,7 +43,7 @@ docker images => will error Got permission denied while trying to connect to the
 
 creating aliases
 
-in ~/.bash Add => docker='sudo docker'
+in ~/.bashrc Add => alias docker='sudo docker'
 source ~/.bashrc
 docker images
 
