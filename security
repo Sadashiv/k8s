@@ -41,3 +41,25 @@ kubectl describe pod ubuntu-sleeper
 kubectl get pods -a
 kubectl edit deployment
 kubectl exec -it ubuntu-sleeper -- whoami
+
+kubectl get pods -o wide
+ip addr
+ip addr|grep eth0
+ipcalc  -b 10.12.29.12/24
+kubectl get pods
+kubectl get pods -n kube-system
+kubectl logs weave-net-5v7xr weave -n kube-system
+kubectl get pods -n kube-system
+kubectl describe pod kube-proxy-kf52c -n kube-system
+
+
+kubectl get pods -n kube-system
+kubectl get service -n kube-system
+kubectl -n kube-system describe deployments.apps coredns | grep -A2 Args | grep Corefile
+kubectl get configmap -n kube-system
+kubectl get svc
+kubectl get ns
+kubectl get pods
+kubectl edit deployment webapp
+kubectl exec -it hr  -- nslookup mysql.payroll > /root/CKA/nslookup.out
+cat /root/CKA/nslookup.out
