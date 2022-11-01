@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: simpleapp
+  labels:
+    app: simpleapp-deployment
+spec:
+  ports:
+  - port: 8000
+    protocol: TCP
+  selector:
+    app: simpleapp-deployment
+  type: NodePort
