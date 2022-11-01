@@ -1,0 +1,10 @@
+Services
+========
+
+Service resources
+ In Kubernetes, a Service is an abstraction which defines a logical set of Pods and a policy by which to access them
+ (sometimes this pattern is called a micro-service).
+
+A Service in Kubernetes is a REST object, similar to a Pod. Like all of the REST objects, you can POST
+Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. 
+Traffic routing is controlled by rules defined on the Ingress resource.

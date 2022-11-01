@@ -407,3 +407,4 @@ argument that was not defined in the Dockerfile, the build outputs a warning.
 Login or configure custom docker registery
 docker login [server]
 
+kubectl port-forward deployment/simpleapp 8080 8000
