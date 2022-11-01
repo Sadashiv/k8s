@@ -1,0 +1,21 @@
+kubectl get pods --all-namespaces
+kubectl get deployment ns  ingress-nginx
+kubectl get deployment -n  ingress-nginx
+kubectl get pods -A
+kubectl get pods -n app-space
+kubectl get pods -A
+kubectl get ingress --all-namespace
+kubectl get po -A
+kubectl get deployment -n critical-space
+kubectl get pods --all-namespaces -o wide|grep ingress
+kubectl describe ingress --namespace app-space
+kubectl edit ingress --namespace app-space
+kubectl edit ingress --namespace app-space
+kubectl get pods -A
+kubectl create ns ingress-space
+kubectl create configmap nginx-configuration --namespace ingress-space
+kubectl create serviceaccount ingress-serviceaccount --namespace ingress-space
+kubectl apply -f /root/ingress-controller.yaml
+kubectl get ns
+kubectl create ns ingress
+kubectl apply -f /root/ingress-controller.yaml

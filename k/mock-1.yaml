@@ -1,0 +1,78 @@
+   1  kubectl run nginx-pod --image=nginx:alpine --dry-run=client -o yaml 
+    2  vim depl.yaml
+    3  kubectl apply -f depl.yaml
+    4  vim depl.yaml 
+    5  kubectl apply -f depl.yaml
+    6  vim depl.yaml 
+    7  kubectl apply -f depl.yaml
+    8  vim depl.yaml 
+    9  kubectl apply -f depl.yaml
+   10  vim depl.yaml 
+   11  kubectl apply -f depl.yaml
+   12  kubectl run messaging --image=redis:alpine --dry-run=client -o yaml
+   13  vim redis.yaml
+   14  kubectl apply -f redis.yaml
+   15  kubectl get pods
+   16  kubectl create ns apx-x9984574
+   17  kubectl get nodes
+   18  kubectl get nodes --dry-run=client -o yaml
+   19  kubectl get nodes -o json
+   20  kubectl get nodes -o json > /opt/outputs/nodes-z3444kd9.json
+   21  kubectl expose pod messaging --name=messaging-service --port 6379
+   22  kubectl run hr-web-app --image=kodekloud/webapp-color --replicas=2 -o json
+   23  kubectl run hr-web-app --image=kodekloud/webapp-color --replicas=2
+   24  kubectl run hr-web-app --image=kodekloud/webapp-color --replica=2
+   25  kubectl run hr-web-app --image=kodekloud/webapp-color --replicas=2
+   26  kubectl run hr-web-app --image kodekloud/webapp-color --replicas=2
+   27  kubectl run hr-web-app --image kodekloud/webapp-color --dry-run=client -o yaml
+   28  vim depl.yaml
+   29  vim dep.yaml
+   30  kubectl apply -f dep.yaml
+   31  vim dep.yaml
+   32  kubectl apply -f dep.yaml
+   33  vim dep.yam
+   34  kubectl apply -f  dep.yam
+   35  kubectl run static-busybox --image=busybox --dry-run=client -o yaml
+   36  vim busybox.yaml
+   37  kubectl run static-busybox --image=busybox --command "sleep 1000" --dry-run=client -o yaml
+   38  kubectl run static-busybox --image=busybox --command "sleep 1000" --dry-run=client -o yaml > /etc/kubernetes/manifests/static-busybox.yaml
+   39  kubectl run temp-bus --image=redis:alpine --namespace=finance
+   40  kubectl get pods
+   41  kubectl describe pod orange
+   42  kubectl logs pod orange
+   43  kubectl logs pods orange
+   44  kubectl logs orange
+   45  kubectl edit pod orange
+   46  kubectl replace --force -f /tmp/kubectl-edit-2044078102.yaml
+   47  kubectl expose deploy hr-web-app --name=hr-web-app-service --port 8080 --target-port 8080 --type NodePort --dy-run -o yaml
+   48  kubectl expose deploy hr-web-app --name=hr-web-app-service --port 8080 --target-port 8080 --type NodePort --dry-run -o yaml
+   49  kubectl expose deploy hr-web-app --name=hr-web-app-service --port 8080 --target-port 8080 --type NodePort --dry-run -o yaml > service.yam;
+   50  kubectl expose deploy hr-web-app --name=hr-web-app-service --port 8080 --target-port 8080 --type NodePort --dry-run -o yaml > service.yaml
+   51  kubectl expose deploy hr-web-app --name=hr-web-app-service --port 8080 --target-port 8080 --type NodePort --dry-run=client -o yaml > service.yaml
+   52  kubectl apply -f service.yaml 
+   53  kubectl get nodes
+   54  kubectl get nodes -o json
+   55  kubectl get nodes -o=jsonpath='{.items[*].status.nodeInfo.osImage}' > /opt/outputs/nodes_os_x43kj56.txt
+   56  cat /opt/outputs/nodes_os_x43kj56.txt
+   57  kubectl apply -f - <<EOF
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-analytics
+spec:
+  capacity:
+    storage: 100Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: slow
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  hostPath:
+    path: /pv/data-analytics
+EOF
+
+   58  history 
+
