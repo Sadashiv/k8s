@@ -1,3 +1,31 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: simpleapp-pv-volume
+spec:
+  storageClassName: local-device
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/opt/simpleapp"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: simpleapp-pv-claim
+spec:
+  storageClassName: local-device
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,8 +47,26 @@ spec:
     spec:
       containers:
       - name: simpleapp-container-deployment
-        image: 9538253250/simpleapp:3.0
+        image: 9538253250/simpleapp:4.0
+        env:
+          - name: APP_COLOR
+            value: silver
         ports:
           - containerPort: 8000
+        volumeMounts:
+          - mountPath: "/opt/simpleapp"
+            name: simpleapp-storage
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu : "500m"
+      volumes:
+        - name: simpleapp-storage
+          persistentVolumeClaim:
+            claimName: simpleapp-pv-claim 
         #command: ["sleep2.0"] #Entrypoint
         #args: ["10"] #cmd line arugument
+

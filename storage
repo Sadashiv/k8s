@@ -5,3 +5,24 @@ kubectl get pv,pvc
 kubectl delete pvc claim-log-1
 kubectl get pvc
 
+A PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes.
+A PersistentVolumeClaim (PVC) is a request for storage by a user. It is similar to a Pod. Pods consume node resources and PVCs consume PV resources.
+
+static by administrator
+dynamic provisoning the PV
+kubectl delete pvc --all
+
+A ConfigMap is not designed to hold large chunks of data. The data stored in a ConfigMap cannot exceed 1 MiB.
+If you need to store settings that are larger than this limit, you may want to consider mounting a volume or use a separate database or file service.
+
+There are four different ways that you can use a ConfigMap to configure a container inside a Pod:
+
+Inside a container command and args
+Environment variables for a container
+Add a file in read-only volume, for the application to read
+Write code to run inside the Pod that uses the Kubernetes API to read a ConfigMap
+
+kubectl get pvc --all-namespaces -o json | jq -j '.items[] | "\(.metadata.namespace), \(.metadata.name), \(.spec.volumeName)\n"'
+kubectl get po -o json --all-namespaces | jq -j '.items[] | "\(.metadata.namespace), \(.metadata.name), \
+(.spec.volumes[].persistentVolumeClaim.claimName)\n"' | grep -v null
+

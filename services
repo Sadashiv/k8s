@@ -8,3 +8,7 @@ Service resources
 A Service in Kubernetes is a REST object, similar to a Pod. Like all of the REST objects, you can POST
 Ingress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. 
 Traffic routing is controlled by rules defined on the Ingress resource.
+
+ingress and eagress
+
+

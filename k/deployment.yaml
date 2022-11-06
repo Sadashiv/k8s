@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpleapp
+  labels:
+    app: simpleapp-deployment
+
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: simpleapp-deployment
+
+  template:
+    metadata:
+      labels:
+        app: simpleapp-deployment
+
+    spec:
+      containers:
+      - name: simpleapp-container-deployment
+        image: 9538253250/simpleapp:3.0
+        ports:
+          - containerPort: 8000
+        volumeMounts:
+          - mountPath: "/opt/data"
+            name: simpleapp-storage
+      volumes:
+        - name: simpleapp-storage
+          persistentVolumeClaim:
+            claimName: simpleapp-pv-claim 
+

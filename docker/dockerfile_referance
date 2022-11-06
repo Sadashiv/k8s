@@ -251,3 +251,36 @@ We are interested in how we can leverage Labels for Docker Images.
 LABEL org.label-schema.build-date="2017-08-28T09:24:41Z"
 You can generate the current date timestamp in this format in Bash using the following command.
 date -u +'%Y-%m-%dT%H:%M:%SZ'
+
+Persistant volume in docker
+docker volume create sadashiv
+docker volume ls
+docker volume inspect sadashiv
+docker run -d -it -v sadashiv:/opt --restart=always 9538253250/simpleapp:3.0
+docker run -d -it -v sadashiv:/opt:ro --restart=always 9538253250/simpleapp:3.0
+sudo ls /var/lib/docker/volumes/sadashiv/_data
+docker run -d --mount source=sadashiv,target=/opt --restart=always 9538253250/simpleapp:3.0
+docker run -d --mount source=sadashiv,target=/opt,readonly --restart=always 9538253250/simpleapp:3.0
+
+cd /opt/k8s/app
+docker run -d -it -v $(pwd):/opt --restart=always 9538253250/simpleapp:3.0
+
+point the local path /opt/k8s/app to /opt in container
+
+Back up a volume
+
+docker run -v /dbdata --name dbstore ubuntu /bin/bash
+docker run --rm --volumes-from dbstore -v $(pwd):/backup ubuntu tar cvf /backup/backup.tar /dbdata
+
+docker mount we can change code from host machine it might be security constraint
+sudo vim /var/lib/docker/volumes/mount/_data/app/views.py
+
+Restore volume from a backup
+docker run -v /dbdata --name dbstore2 ubuntu /bin/bash
+docker run --rm --volumes-from dbstore2 -v $(pwd):/backup ubuntu bash -c "cd /dbdata && tar xvf /backup/backup.tar --strip 1"
+--mount type=bind,source=$HOME/docker/volumes/postgres,target=/var/lib/postgresql/data
+--mount type=volume,source=$HOME/docker/volumes/postgres,target=/var/lib/postgresql/data
+
+
+
+
