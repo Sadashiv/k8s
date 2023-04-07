@@ -13,3 +13,4 @@ json and out-columns
 pv and pvc
 taint and tolerances, nodeaffinity
 configmap
+roles and rolebindings

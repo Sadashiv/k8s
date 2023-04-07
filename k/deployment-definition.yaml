@@ -50,7 +50,7 @@ spec:
         image: 9538253250/simpleapp:4.0
         env:
           - name: APP_COLOR
-            value: silver
+            value: red
         ports:
           - containerPort: 8000
         volumeMounts:

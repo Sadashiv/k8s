@@ -30,6 +30,8 @@ Node behavior
  Kubernetes automatically spreads the Pods for workload resources (such as Deployment or StatefulSet) across different nodes in a cluster.
  This spreading helps reduce the impact of failures.
 
+Autoscale nodes: Most cloud providers support Cluster Autoscaler to replace unhealthy nodes or grow and shrink the number of nodes as demand requires.
+
 Validate node setup
 Node Conformance Test
 Node conformance test is a containerized test framework that provides a system verification and functionality test for a node. The test validates whether the node meets the minimum requirements for Kubernetes; a node that passes the test is qualified to join a Kubernetes cluster.
@@ -101,6 +103,8 @@ cgroupfs driver
 
 The cgroupfs driver is not recommended when systemd is the init system because systemd expects a single cgroup manager on the system.
 Additionally, if you use cgroup v2 , use the systemd cgroup driver instead of cgroupfs.
+
+cgroupDriver: systemd
 
 Migrating to the systemd driver in kubeadm managed clusters
 If you wish to migrate to the systemd cgroup driver in existing kubeadm managed clusters, follow configuring a cgroup driver.

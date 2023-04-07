@@ -29,17 +29,10 @@ kubectl run nginx --image=nginx
 Declarative
 kubectl apply -f nginx.yaml #Identify changes and apply
 
-$ kubectl run nginx-pod --image=nginx:alpine
-$ kubectl run redis --image=redis:alpine -l tier=db
-$ kubectl expose pod redis --port=6379 --name redis-service
-$ kubectl create deploy webapp --image=kodekloud/webapp-color --replicas=3
-$ kubectl run custom-nginx --image=nginx --port=8888
 $ kubectl create ns dev-ns
 $ kubectl create deployment redis-deploy --image=redis --namespace=dev-ns --dry-run=client -o yaml > deploy.yml
 $ kubectl apply -f deploy.yml
-$ kubectl run httpd --image=httpd:alpine --port=80 expose
 $ kubectl run httpd --image=httpd:alpine --port=80 --expose
-$ kubectl run httpd1 --image=httpd:alpine --port=80 --expose
 
 Install kubectl
 curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
@@ -78,11 +71,8 @@ kubelet, which communicates with the Kubernetes Master.
 kube-proxy, a network proxy which reflects Kubernetes networking services on each node.
 
 $ kubectl  version
-Client Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.3", GitCommit:"b3cbbae08ec52a7fc73d334838e18d17e8512749",
-                             GitTreeState:"clean", BuildDate:"2019-11-13T11:23:11Z", GoVersion:"go1.12.12", Compiler:"gc",
-                             Platform:"linux/amd64"}
-The connection to the server localhost:8080 was refused - did you specify the right host or port?
 
+The connection to the server localhost:8080 was refused - did you specify the right host or port?
 
 Docker and kubernetes installation in Ubuntu 18.04LTS
 =====================================================
@@ -181,12 +171,6 @@ kind - What kind of object you want to create
 metadata - Data that helps uniquely identify the object, including a name string, UID, and optional namespace
 spec - What state you desire for the object
 
-Management technique	Operates on	Recommended environment	Supported writers	Learning curve
-Imperative commands	Live objects	Development projects	1+	Lowest
-Imperative object configuration	Individual files	Production projects	1	Moderate
-Declarative object configuration	Directories of files	Production projects	1+	Highest
-
-
 Create the objects defined in a configuration file:
 kubectl create -f nginx.yaml
 
@@ -205,10 +189,6 @@ kubectl diff -R -f configs/
 kubectl apply -R -f configs/
 
 kubectl get nodes
-NAME                     READY   STATUS        RESTARTS   AGE
-nginx-58687bd566-hptgm   1/1     Running       0          44s
-nginx-58687bd566-vm4k6   1/1     Running       0          44s
-simpleapppod             1/1     Running       0          12m
 
 kubectl expose pod nginx-58687bd566-vm4k6  --type=NodePort
 service/nginx-58687bd566-vm4k6 exposed
@@ -222,7 +202,6 @@ nginx-58687bd566-vm4k6   1/1     Running   0          7m29s
 simpleapppod             1/1     Running   0          18m
 
 kubectl run nginx --image=nginx --namespace=sada
-
 
 kubectl config set-context --current --namespace=sada
 Context "minikube" modified.
