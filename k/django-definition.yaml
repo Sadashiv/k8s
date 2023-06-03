@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: simpleapppod
+  name: linuxapp
   labels:
-    name: simpleapp
+    name: linuxapp
 
 spec:
   containers:
-    - name: simpleapp-container
-      image: 9538253250/simpleapp:latest
+    - name: linuxapp-container
+      image: 9538253250/linux:0.1
       ports:
         - containerPort: 8000

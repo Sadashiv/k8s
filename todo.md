@@ -1,7 +1,7 @@
 List of activites to do
 =======================
 
-1. Create private registry and push docker images
+1. Create private registry and push docker images and try with access details
 
 deployment, create k8 service and access application
 differance beteween deployment and rs, rc

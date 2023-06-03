@@ -408,3 +408,11 @@ Login or configure custom docker registery
 docker login [server]
 
 kubectl port-forward deployment/simpleapp 8080 8000
+
+
+  616  minikube ssh -- mkdir -p  /storage/mysql/djangodb
+  617  sudo minikube ssh -- mkdir -p  /storage/mysql/djangodb
+  618  eval $(minikube docker-env)
+  619  docker run -d -e MYSQL_ROOT_PASSWORD=root@123 --name django-mysql -v opt/djangodb:/var/lib/mysql mysql
+  620  docker run -d -e MYSQL_ROOT_PASSWORD=root@123 --name django-mysql -v /opt/djangodb:/var/lib/mysql mysql
+
