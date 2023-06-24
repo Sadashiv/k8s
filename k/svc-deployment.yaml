@@ -11,3 +11,7 @@ spec:
   selector:
     app: simpleapp-deployment
   type: NodePort
+
+#kubectl get svc simpleapp -> to get NodePort
+#http://minikubeip:nodeport
+#minikube service simpleapp --url
