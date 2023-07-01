@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: simpleapp-container-deployment
-        image: 9538253250/simpleapp:venv1
+        image: 9538253250/simpleapp:install
         ports:
           - containerPort: 8000
         env:
@@ -32,4 +32,11 @@ spec:
 #        - name: simpleapp-storage
 #          persistentVolumeClaim:
 #            claimName: simpleapp-pv-claim 
+#kubectl set image deployment/simpleapp simpleapp-container-deployment=9538253250/simpleapp:update
+#kubectl rollout undo deployment/simpleapp -> to back to previous version
+#kubectl rollout restart deployment/simpleapp
+#kubectl scale --replicas=8 deployment/simpleapp
+#kubectl scale --replicas=3 deployment/simpleapp
+#max 25% unavaliable and max 25 surge in deployment update
+
 
