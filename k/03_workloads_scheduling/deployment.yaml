@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simpleapp
+  labels:
+    app: simpleapp-deployment
+
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: simpleapp-deployment
+
+  template:
+    metadata:
+      labels:
+        app: simpleapp-deployment
+
+    spec:
+      containers:
+      - name: simpleapp-container-deployment
+        image: 9538253250/simpleapp:install
+        ports:
+          - containerPort: 8000
+        env:
+         - name: APP_COLOR
+           value: red
+#        volumeMounts:
+#          - mountPath: "/opt/data"
+#            name: simpleapp-storage
+#      volumes:
+#        - name: simpleapp-storage
+#          persistentVolumeClaim:
+#            claimName: simpleapp-pv-claim 
+#kubectl set image deployment/simpleapp simpleapp-container-deployment=9538253250/simpleapp:update
+#kubectl edit deployment/nginx-deployment
+#kubectl rollout status deployment/simpleapp
+#kubectl rollout undo deployment/simpleapp -> to back to previous version
+#kubectl rollout restart deployment/simpleapp
+#kubectl scale --replicas=8 deployment/simpleapp
+#kubectl scale --replicas=3 deployment/simpleapp
+#max 25% unavaliable and max 25 surge in deployment update
+#kubectl autoscale deployment/simpleapp --min=10 --max=10
+#kubectl rollout pause deployment/simpleapp
+#kubectl rollout history deployment/simpleapp
+#kubectl set image update chnages here
+#kubectl rollout resume deployment/simpleapp
+#recreate
+#rollingUpdate
