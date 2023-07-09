@@ -1,0 +1,73 @@
+Volumes
+=======
+As we know continers are ephemeral(short living). Once continer dies or restarts the data will be lost.
+Volumes is the one comes up with storing data and in kubernetes it solves the problem even with share and access.
+
+A PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned
+using Storage Classes. It is a resource in the cluster just like a node is a cluster resource
+
+A PersistentVolumeClaim (PVC) is a request for storage by a user. It is similar to a Pod. Pods consume node resources and PVCs consume PV resources.
+Pods can request specific levels of resources (CPU and Memory).
+
+PV provisioning static or dynamically. 
+A PVC to PV binding is a one-to-one mapping, using a ClaimRef which is a bi-directional binding between the PersistentVolume and the PersistentVolumeClaim
+
+If a user deletes a PVC in active use by a Pod, the PVC is not removed immediately. PVC removal is postponed until the PVC is no longer actively
+used by any Pods. Also, if an admin deletes a PV that is bound to a PVC, the PV is not removed immediately.
+PV removal is postponed until the PV is no longer bound to a PVC.
+
+Reclaiming what to do with the volume after it has been released of its claim.
+volumes can either be Retained, Recycled, or Deleted.
+
+Capacity
+Generally, a PV will have a specific storage capacity. This is set using the PV's capacity attribute.
+
+A volume with volumeMode: Filesystem is mounted into Pods into a directory.
+You can set the value of volumeMode to Block to use a volume as a raw block device.
+
+Access Modes
+A PersistentVolume can be mounted on a host in any way supported by the resource provider.
+
+The access modes are:
+
+ReadWriteOnce
+the volume can be mounted as read-write by a single node.
+
+ReadOnlyMany
+the volume can be mounted as read-only by many nodes.
+
+ReadWriteMany
+the volume can be mounted as read-write by many nodes.
+
+ReadWriteOncePod
+the volume can be mounted as read-write by a single Pod.
+
+PersistentVolumes binds are exclusive, and since PersistentVolumeClaims are namespaced objects, mounting claims with
+"Many" modes (ROX, RWX) is only possible within one namespace.
+
+Create the PersistentVolume
+minikube ssh
+sudo mkdir /mnt/data
+sudo sh -c "echo 'Hello from Kubernetes storage' > /mnt/data/index.html"
+cat /mnt/data/index.html
+Hello from Kubernetes storage
+
+kubectl apply -f 01_storage/pv.yaml
+kubectl get pv task-pv-volume
+==>Here the status will  be available 
+kubectl apply -f 01_storage/pvc.yaml
+kubectl get pv task-pv-claim
+==>Here the status will become bound
+kubectl apply -f pv-pod.yaml
+kubectl exec -it task-pv-pod -- /bin/bash
+root@task-pv-pod:/# curl http://localhost/
+Hello from Kubernetes storage
+
+
+
+
+
+
+
+
+
