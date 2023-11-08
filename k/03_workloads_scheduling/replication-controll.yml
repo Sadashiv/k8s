@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: simpleapp-rc
+
+spec:
+  template:
+    metadata:
+      labels:
+        app: simpleapp-rc
+    spec:
+      containers:
+      - name: simpleapp-rc
+        image: 9538253250/simpleapp:1.0
+        ports:
+        - containerPort: 8000
+  replicas: 5
+  selector:
+    app: simpleapp-rc
+

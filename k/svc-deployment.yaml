@@ -8,9 +8,11 @@ spec:
   ports:
   - port: 8000
     protocol: TCP
+    nodePort: 30000
   selector:
     app: simpleapp-deployment
-  type: NodePort
+  #type: NodePort
+  type: LoadBalancer
 
 #kubectl get svc simpleapp -> to get NodePort
 #http://minikubeip:nodeport

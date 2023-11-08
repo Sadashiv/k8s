@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: simpleapp-recreate
   namespace: default
 spec:
   replicas: 4
   selector:
     matchLabels:
-      name: webapp
+      name: simpleapp-rec
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        name: webapp
+        name: simpleapp-rec
     spec:
       containers:
-      - image: kodekloud/webapp-color:v3
-        name: simple-webapp
+      - image: 9538253250/simpleapp:install
+        name: simpleapp-recr
         ports:
         - containerPort: 8080
           protocol: TCP

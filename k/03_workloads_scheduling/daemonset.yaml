@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: ReplicaSet
+kind: DaemonSet
 metadata:
   name: simpleapp-rs
   labels:
@@ -7,7 +7,7 @@ metadata:
     tier: simpleapp-rs
 
 spec:
-  replicas: 5
+#  replicas: 5
   selector:
     matchLabels:
       tier: simpleapp-rs
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: simpleapp-rs
-        image: 9538253250/simpleapp:install
+        image: 9538253250/simpleapp:1.0
         ports:
         - containerPort: 8000
 

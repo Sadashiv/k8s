@@ -65,9 +65,5 @@ Hello from Kubernetes storage
 
 
 
-
-
-
-
-
-
+pv and pv created independnetly but pv-pod we have to map volumes pvc with claim name created
+under containers volumount with claim name and mount path
