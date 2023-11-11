@@ -19,12 +19,47 @@ spec:
     spec:
       containers:
       - name: simpleapp-container-deployment
-        image: 9538253250/simpleapp:install
+        image: 9538253250/linuxusermgmt:v1.0
         ports:
           - containerPort: 8000
-        env:
-         - name: APP_COLOR
-           value: red
+        #env:
+        # - name: APP_COLOR
+        #   value: red
+
+        ##this is using the configmap
+        #kubectl create configmap appcolor --from-literal=APP_COLOR=blue
+        #envFrom:
+        #  - configMapRef:
+        #      name: appcolor
+
+        ###This section using configmap.yaml
+        envFrom:
+          - configMapRef:
+              name: app-config
+
+        ###kubectl create configmap config-from-file-cmd --from-file=k/03_workloads_scheduling/configmap.properties
+        #env:
+        #  - name: linux_user
+        #    valueFrom:
+        #      configMapKeyRef:
+        #        name: configmap-from-file
+        #        key: linux_user
+        #envFrom:
+        #  - configMapRef:
+        #      name: appcolor
+      ####################### Pending from configMapKeyRef and volumes
+      ###Secret
+      #kubectl create secret generic appsecret --from-literal=APP_COLOR=pink
+      #kubectl get secret appsecret -o jsonpath='{.data}'
+        volumeMounts:
+        - name: newsecret
+          mountPath: "/etc/newsecret"
+            #readOnly: true
+      volumes:
+        - name: newsecret
+          secret:
+            secretName: newsecret
+
 #        volumeMounts:
 #          - mountPath: "/opt/data"
 #            name: simpleapp-storage

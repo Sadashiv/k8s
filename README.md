@@ -416,3 +416,28 @@ kubectl port-forward deployment/simpleapp 8080 8000
   619  docker run -d -e MYSQL_ROOT_PASSWORD=root@123 --name django-mysql -v opt/djangodb:/var/lib/mysql mysql
   620  docker run -d -e MYSQL_ROOT_PASSWORD=root@123 --name django-mysql -v /opt/djangodb:/var/lib/mysql mysql
 
+  --name private-registry \
+  -p 443:443 \
+
+ docker run -d \
+  --restart=always \
+  -v `pwd`/auth:/auth \
+  -v `pwd`/certs:/certs \
+  -v `pwd`/certs:/certs \
+  -e REGISTRY_AUTH=htpasswd \
+  -e REGISTRY_AUTH_HTPASSWD_REALM="Registry Realm" \
+  -e REGISTRY_AUTH_HTPASSWD_PATH=/opt/simpleapp/.htpasswd \
+  -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
+  -e REGISTRY_HTTP_TLS_CERTIFICATE=/etc/nginx/certs/apppublic.crt \
+  -e REGISTRY_HTTP_TLS_KEY=/etc/nginx/certs/appprivate.key \
+  registry:2
+
+##Minikube certs expired###
+Error: certificate apiserver-kubelet-client: the certificate has expired: NotBefore: 2022-09-24 12:53:32
+minikube ssh
+mv /var/lib/minikube/certs /var/lib/minikube/certs_old
+minikube start
+
+or(Data all will be deleted)
+minikube delete --all --purge
+minikube start .
