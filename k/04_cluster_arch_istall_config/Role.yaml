@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+    name: pod-reader
+    namespace: default
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  #resourceNames: ["my-configmap"] #Resource name wise also we can grant permission
+  verbs: ["get", "list", "watch"]
+

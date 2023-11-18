@@ -1,0 +1,197 @@
+Cluster Architecture, Installation & Configuration-->25%
+========================================================
+Manage role based access control (RBAC)
+Use Kubeadm to install a basic cluster
+Manage a highly-available Kubernetes cluster
+Provision underlying infrastructure to deploy a Kubernetes cluster
+Perform a version upgrade on a Kubernetes cluster using Kubeadm
+Implement etcd backup and restore
+
+
+Authentication - is to login application using built-in or LDAP or SSO
+Authorization - Is to grant the permission per user or group basis
+
+The RBAC API declares four kinds of Kubernetes object: Role, ClusterRole, RoleBinding and ClusterRoleBinding.
+
+Role and ClusterRole
+An RBAC Role or ClusterRole contains rules that represent a set of permissions. Permissions are purely additive (there are no "deny" rules).
+
+ClusterRole example
+A ClusterRole can be used to grant the same permissions as a Role.
+
+RoleBinding and ClusterRoleBinding
+A role binding grants the permissions defined in a role to a user or set of users.
+
+A RoleBinding may reference any Role in the same namespace. Alternatively,
+a RoleBinding can reference a ClusterRole and bind that ClusterRole to the namespace of the RoleBinding.
+If you want to bind a ClusterRole to all the namespaces in your cluster, you use a ClusterRoleBinding.
+
+kubectl auth can-i get pods
+kubectl auth whoami
+
+Default roles and role bindings
+
+kubectl get clusterroles system:discovery -o yaml
+
+Command line
+kubectl create role foo --verb=get,list,watch --resource=replicasets.apps
+kubectl create clusterrole foo --verb=get,list,watch --resource=replicasets.apps
+
+kubectl create rolebinding myapp-view-binding --clusterrole=view --serviceaccount=acme:myapp --namespace=acme
+
+kubectl create clusterrolebinding myapp-view-binding --clusterrole=view --serviceaccount=acme:myapp
+
+Kubeadm
+=======
+Runtime	                            Path to Unix domain socket
+containerd	                        unix:///var/run/containerd/containerd.sock
+CRI-O	                            unix:///var/run/crio/crio.sock
+Docker Engine (using cri-dockerd)   unix:///var/run/cri-dockerd.sock
+
+You will install these packages on all of your machines:
+
+kubeadm: the command to bootstrap the cluster.
+
+kubelet: the component that runs on all of the machines in your cluster and does things like starting pods and containers.
+
+kubectl: the command line util to talk to your cluster.
+
+ip link
+ifconfig -a
+sudo cat /sys/class/dmi/id/product_uuid
+nc 127.0.0.1 6443
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl #apt-mark hold will prevent package being upgrade, install or remove
+
+sudo swapoff -a
+
+systemctl status kubelet
+kubeadm init
+
+WARNING Swap]: swap is enabled; production deployments should disable swap unless testing the NodeSwap feature gate of the kubelet
+error execution phase preflight: [preflight] Some fatal errors occurred:
+	[ERROR CRI]: container runtime is not running: output: time="2023-11-14T14:44:08+05:30" level=fatal msg="validate service connection: validate CRI v1 runtime API for endpoint \"unix:///var/run/containerd/containerd.sock\": rpc error: code = Unimplemented desc = unknown service runtime.v1.RuntimeService"
+, error: exit status 1
+
+Solution:
+ $ rm /etc/containerd/config.toml
+ $ systemctl restart containerd
+
+kubeadm init --ignore-preflight-errors=Swap
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+Your Kubernetes control-plane has initialized successfully!
+
+To start using your cluster, you need to run the following as a regular user:
+
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+Alternatively, if you are the root user, you can run:
+
+  export KUBECONFIG=/etc/kubernetes/admin.conf
+
+You should now deploy a pod network to the cluster.
+Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+  https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 192.168.0.107:6443 --token 3gdmg6.1u969chkhnh7zigf \
+	--discovery-token-ca-cert-hash sha256:cd017a8e0f8d9493993ddb2d19f2b693bcf8cf3e3f8a3cbe9c7c54089bb1d1d7 
+
+kubeadm reset
+
+sudo ufw allow 6443/tcp
+sudo ufw allow 2379:2380/tcp
+sudo ufw allow 10250/tcp
+sudo ufw allow 10251/tcp
+sudo ufw allow 10252/tcp
+sudo ufw allow 10255/tcp
+
+On worker
+sudo ufw allow 10251/tcp
+sudo ufw allow 10255/tcp
+
+[devops@devops k8s (master *)]$ kubectl get pods -n kube-system
+NAME                             READY   STATUS              RESTARTS   AGE
+coredns-5dd5756b68-btngq         0/1     ContainerCreating   0          28m
+coredns-5dd5756b68-sr7qg         0/1     ContainerCreating   0          28m
+etcd-devops                      1/1     Running             0          28m
+kube-apiserver-devops            1/1     Running             0          28m
+kube-controller-manager-devops   1/1     Running             0          28m
+kube-proxy-vqwnd                 1/1     Running             0          28m
+kube-scheduler-devops            1/1     Running             0          28m
+
+We need to install Container Network Interface(CNI)
+kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+kubectl delete -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+
+https://github.com/flannel-io/flannel
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+
+systemctl restart containerd
+
+sudo systemctl stop kubelet
+sudo rm -rf /var/lib/kubelet/pods/*
+sudo systemctl start kubelet
+
+kubectl describe pod coredn -n kube-system
+
+Schedule pod in kubeadm approach eanble scheudling pod in master:
+kubectl taint node devops node-role.kubernetes.io/control-plane:NoSchedule-
+
+Upgrade Cluster:
+sudo apt update
+sudo apt-cache madison kubeadm #Display the list versions availble
+kubeadm version
+#sudo apt-mark unhold kubeadm &&  sudo apt-get update && sudo  apt-get install -y kubeadm='1.28.4-1' &&  sudo apt-mark hold kubeadm
+kubeadm version
+kubeadm upgrade plan
+sudo kubeadm upgrade plan
+sudo kubeadm upgrade apply V1.28.4-1
+sudo kubeadm upgrade node
+
+Note: kubeadm upgrade fails do not rollback instead run: kubeadm upgrade apply --force it will take care of recovery and upgrade
+
+kubeadm version
+sudo kubeadm upgrade plan
+sudo apt-mark unhold kubeadm &&  sudo apt-get update && sudo  apt-get install -y kubeadm=1.28.4 &&  sudo apt-mark hold kubeadm
+sudo kubeadm upgrade apply
+kubectl drain devops --ignore-daemonsets
+sudo apt-mark unhold kubeadm &&  sudo apt-get update && sudo  apt-get install -y kubeadm=1.28.4-1 &&  sudo apt-mark hold kubeadm
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+kubectl uncordon devops
+
+Upgrade Worker node
+kubeadm upgrade node
+kubectl drain <node-to-drain> --ignore-daemonsets
+sudo apt-mark unhold kubelet kubectl && \
+sudo apt-get update && sudo apt-get install -y kubelet='1.28.x-*' kubectl='1.28.x-*' && \
+sudo apt-mark hold kubelet kubectl
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+kubectl uncordon <node-to-uncordon>
+
+ETCD Backup
+
+sudo apt install etcd-client
+sudo apt install etcd-server
+export ETCDCTL_API=3
+sudo etcdctl --endpoints=https://192.168.0.107:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt  --cert=/etc/kubernetes/pki/etcd/server.crt \
+--key=/etc/kubernetes/pki/etcd/server.key snapshot save etcd-bkp.db
+
+sudo ETCDCTL_API=3 etcdctl --data-dir="/var/lib/etcd-backup" \
+> --endpoints=https://127.0.0.1:2379 \
+> --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+> --cert=/etc/kubernetes/pki/etcd/server.crt \
+> --key=/etc/kubernetes/pki/etcd/server.key \
+> snapshot restore etcd-bkp.db
+
+

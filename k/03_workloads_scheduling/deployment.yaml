@@ -31,6 +31,13 @@ spec:
             cpu: 0.5
             ephemeral-storage: "10Gi"
 #            memory: 2000
+#        volumeMounts:
+#          - name: ephemeral
+#            mountPath: /tmp
+#    volumes:
+#      - name: ephemeral
+#        emptyDir:
+#          sizeLimit: 500
 
         #env:
         # - name: APP_COLOR
@@ -61,14 +68,14 @@ spec:
       ###Secret
       #kubectl create secret generic appsecret --from-literal=APP_COLOR=pink
       #kubectl get secret appsecret -o jsonpath='{.data}'
-        volumeMounts:
-        - name: newsecret
-          mountPath: "/etc/newsecret"
-            #readOnly: true
-      volumes:
-        - name: newsecret
-          secret:
-            secretName: newsecret
+#        volumeMounts:
+#        - name: newsecret
+#          mountPath: "/etc/newsecret"
+#            #readOnly: true
+#      volumes:
+#        - name: newsecret
+#          secret:
+#            secretName: newsecret
 
 #        volumeMounts:
 #          - mountPath: "/opt/data"
